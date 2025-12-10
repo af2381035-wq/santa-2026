@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тайный Санта</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #ff6b6b;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a5b4fc;
+            margin-bottom: 20px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .auth-section, .santa-section, .admin-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            flex: 1;
+            min-width: 300px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #4ecdc4;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #a5b4fc;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4ecdc4;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(to right, #ff6b6b, #ff8e53);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-disabled {
+            background: linear-gradient(to right, #777, #999);
+            cursor: not-allowed;
+        }
+
+        .btn-disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .user-info {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .user-info h3 {
+            color: #4ecdc4;
+            margin-bottom: 10px;
+        }
+
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 20px;
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .result h3 {
+            color: #ffd166;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .result-name {
+            font-size: 2.5rem;
+            color: #4ecdc4;
+            font-weight: 700;
+            margin: 15px 0;
+            text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+        }
+
+        .participants-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .participants-list li {
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .active {
+            background-color: #4ecdc4;
+        }
+
+        .inactive {
+            background-color: #ff6b6b;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .success {
+            background-color: rgba(78, 205, 196, 0.2);
+            border-left: 5px solid #4ecdc4;
+        }
+
+        .error {
+            background-color: rgba(255, 107, 107, 0.2);
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .snowflake {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a5b4fc;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="snowflakes" id="snowflakes"></div>
+
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-gift"></i> Тайный Санта</h1>
+            <p class="subtitle">Подари радость, получи подарок! Участвуйте в нашем праздничном обмене подарками.</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Секция авторизации -->
+            <section class="auth-section" id="authSection">
+                <h2 class="section-title"><i class="fas fa-user"></i> Вход в систему</h2>
+                <div id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Логин</label>
+                        <input type="text" id="username" placeholder="Введите ваш логин" value="анна">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" id="password" placeholder="Введите ваш пароль" value="anna123">
+                    </div>
+                    <button class="btn" id="loginBtn" type="button">Войти</button>
+                    <div id="authMessage" class="message hidden"></div>
+                </div>
+
+                <div class="user-info hidden" id="userInfo">
+                    <h3>Добро пожаловать, <span id="currentUser"></span>!</h3>
+                    <p>Вы успешно вошли в систему. Теперь вы можете принять участие в конкурсе "Тайный Санта".</p>
+                    <button class="btn" id="logoutBtn" type="button">Выйти</button>
+                </div>
+            </section>
+
+            <!-- Секция Тайного Санты -->
+            <section class="santa-section">
+                <h2 class="section-title"><i class="fas fa-gift"></i> Участие в конкурсе</h2>
+                <div id="santaInfo">
+                    <p>Чтобы принять участие в конкурсе "Тайный Санта", необходимо сначала войти в систему.</p>
+                    <p>После входа вы сможете нажать кнопку "Стать Тайным Сантой" и система случайным образом выберет для вас получателя подарка.</p>
+                </div>
+
+                <div class="hidden" id="santaAction">
+                    <div class="result" id="resultSection">
+                        <h3>Ваш получатель:</h3>
+                        <div class="result-name" id="recipientName">Еще не определен</div>
+                        <p id="resultMessage">После нажатия кнопки "Стать Тайным Сантой" здесь появится имя получателя вашего подарка.</p>
+                    </div>
+
+                    <button class="btn" id="becomeSantaBtn" type="button">
+                        <i class="fas fa-hat-wizard"></i> Стать Тайным Сантой!
+                    </button>
+                    <div class="message" id="santaMessage"></div>
+                </div>
+            </section>
+
+            <!-- Админская секция (для демонстрации) -->
+            <section class="admin-section">
+                <h2 class="section-title"><i class="fas fa-users"></i> Участники конкурса</h2>
+                <p>Список всех пользователей, которые могут принять участие в конкурсе:</p>
+
+                <ul class="participants-list" id="participantsList">
+                    <!-- Список участников будет загружен через JS -->
+                </ul>
+
+                <div class="message" id="adminMessage">
+                    Всего участников: <span id="totalParticipants">0</span><br>
+                    Осталось распределить: <span id="remainingParticipants">0</span>
+                </div>
+
+                <button class="btn" id="resetBtn" type="button">
+                    <i class="fas fa-redo"></i> Сбросить распределение (админ)
+                </button>
+            </section>
+        </div>
+
+        <footer>
+            <p>Конкурс "Тайный Санта" Compasstech 2025-2026 | Система автоматического распределения участников | all rights reserved</p>
+            <p>Внимание: Каждый пользователь может получить получателя подарка только один раз!</p>
+        </footer>
+    </div>
+
+    <script>
+        // Имитация базы данных пользователей
+        const users = [
+            { id: 1, username: "анна", password: "anna123", assigned: false, recipient: null },
+            { id: 2, username: "борис", password: "boris123", assigned: false, recipient: null },
+            { id: 3, username: "виктор", password: "viktor123", assigned: false, recipient: null },
+            { id: 4, username: "галина", password: "galina123", assigned: false, recipient: null },
+            { id: 5, username: "дмитрий", password: "dmitry123", assigned: false, recipient: null },
+            { id: 6, username: "елена", password: "elena123", assigned: false, recipient: null },
+            { id: 7, username: "сергей", password: "sergey123", assigned: false, recipient: null }
+        ];
+
+        // Текущий авторизованный пользователь
+        let currentUser = null;
+
+        // Создаем снежинки для праздничной атмосферы
+        function createSnowflakes() {
+            const snowflakesContainer = document.getElementById('snowflakes');
+            const snowflakeCount = 50;
+
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+
+                // Случайный размер
+                const size = Math.random() * 5 + 3;
+                snowflake.style.width = `${size}px`;
+                snowflake.style.height = `${size}px`;
+
+                // Случайная начальная позиция
+                snowflake.style.left = `${Math.random() * 100}%`;
+                snowflake.style.top = `${Math.random() * 100}%`;
+
+                // Добавляем анимацию падения
+                const duration = Math.random() * 10 + 10;
+                snowflake.style.animation = `fall ${duration}s linear infinite`;
+
+                snowflakesContainer.appendChild(snowflake);
+            }
+
+            // Добавляем стили для анимации
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fall {
+                    0% {
+                        transform: translateY(-100px) rotate(0deg);
+                        opacity: 0.8;
+                    }
+                    100% {
+                        transform: translateY(100vh) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Функция для отображения сообщений
+        function showMessage(elementId, message, type = "success") {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `message ${type}`;
+            element.classList.remove('hidden');
+
+            // Автоматически скрыть сообщение через 5 секунд
+            if (type !== 'error') {
+                setTimeout(() => {
+                    element.classList.add('hidden');
+                }, 5000);
+            }
+        }
+
+        // Функция для обновления списка участников
+        function updateParticipantsList() {
+            const participantsList = document.getElementById('participantsList');
+            participantsList.innerHTML = '';
+
+            let totalAssigned = 0;
+
+            users.forEach(user => {
+                const li = document.createElement('li');
+                const statusDot = document.createElement('span');
+                statusDot.className = `status-dot ${user.assigned ? 'inactive' : 'active'}`;
+
+                li.appendChild(statusDot);
+                li.appendChild(document.createTextNode(user.username));
+
+                if (user.assigned) {
+                    totalAssigned++;
+                    const recipientInfo = document.createElement('span');
+                    recipientInfo.textContent = ` → ${user.recipient}`;
+                    recipientInfo.style.color = '#4ecdc4';
+                    recipientInfo.style.fontWeight = '600';
+                    li.appendChild(recipientInfo);
+                }
+
+                participantsList.appendChild(li);
+            });
+
+            // Обновляем счетчики
+            document.getElementById('totalParticipants').textContent = users.length;
+            document.getElementById('remainingParticipants').textContent = users.length - totalAssigned;
+        }
+
+        // Функция для обработки входа
+        function login() {
+            const username = document.getElementById('username').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+
+            // Проверяем, есть ли пользователь в базе
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                // Авторизуем пользователя
+                currentUser = user;
+
+                // Показываем информацию о пользователе
+                document.getElementById('currentUser').textContent = user.username;
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('loginForm').classList.add('hidden');
+
+                // Показываем секцию с функционалом Санты
+                document.getElementById('santaAction').classList.remove('hidden');
+                document.getElementById('santaInfo').classList.add('hidden');
+
+                // Очищаем поля ввода
+                document.getElementById('password').value = '';
+
+                showMessage('authMessage', 'Успешный вход в систему!', 'success');
+
+                // Проверяем, уже ли пользователь получил получателя
+                if (user.assigned) {
+                    document.getElementById('recipientName').textContent = user.recipient;
+                    document.getElementById('resultMessage').textContent = 'Вы уже участвуете в конкурсе!';
+                    document.getElementById('becomeSantaBtn').classList.add('btn-disabled');
+                    document.getElementById('becomeSantaBtn').disabled = true;
+                } else {
+                    document.getElementById('becomeSantaBtn').classList.remove('btn-disabled');
+                    document.getElementById('becomeSantaBtn').disabled = false;
+                }
+
+                // Обновляем список участников
+                updateParticipantsList();
+            } else {
+                showMessage('authMessage', 'Неверный логин или пароль!', 'error');
+            }
+        }
+
+        // Функция для обработки выхода
+        function logout() {
+            currentUser = null;
+
+            // Скрываем информацию о пользователе
+            document.getElementById('userInfo').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+
+            // Скрываем секцию с функционалом Санты
+            document.getElementById('santaAction').classList.add('hidden');
+            document.getElementById('santaInfo').classList.remove('hidden');
+
+            // Сбрасываем результат
+            document.getElementById('recipientName').textContent = 'Еще не определен';
+            document.getElementById('resultMessage').textContent = 'После нажатия кнопки "Стать Тайным Сантой" здесь появится имя получателя вашего подарка.';
+
+            showMessage('authMessage', 'Вы успешно вышли из системы.', 'success');
+        }
+
+        // Функция для распределения получателя
+        function becomeSanta() {
+            if (!currentUser) {
+                showMessage('santaMessage', 'Сначала войдите в систему!', 'error');
+                return;
+            }
+
+            // Проверяем, не получил ли уже пользователь получателя
+            if (currentUser.assigned) {
+                showMessage('santaMessage', 'Вы уже участвуете в конкурсе!', 'error');
+                return;
+            }
+
+            // Получаем список пользователей, которые еще не получили получателя и исключаем текущего пользователя
+            const availableUsers = users.filter(u => !u.assigned && u.id !== currentUser.id);
+
+            // Проверяем, есть ли доступные пользователи
+            if (availableUsers.length === 0) {
+                showMessage('santaMessage', 'Нет доступных получателей. Все участники уже распределены!', 'error');
+                return;
+            }
+
+            // Случайным образом выбираем получателя
+            const randomIndex = Math.floor(Math.random() * availableUsers.length);
+            const recipient = availableUsers[randomIndex];
+
+            // Обновляем информацию о текущем пользователе
+            currentUser.assigned = true;
+            currentUser.recipient = recipient.username;
+
+            // Обновляем информацию о получателе (чтобы он не мог получить сам себя)
+            recipient.assigned = true;
+
+            // Отображаем результат
+            document.getElementById('recipientName').textContent = recipient.username;
+            document.getElementById('resultMessage').textContent = 'Теперь вы Тайный Санта для этого человека! Приготовьте подарок и сохраните тайну.';
+
+            // Блокируем кнопку
+            document.getElementById('becomeSantaBtn').classList.add('btn-disabled');
+            document.getElementById('becomeSantaBtn').disabled = true;
+
+            // Показываем сообщение
+            showMessage('santaMessage', 'Поздравляем! Вы стали Тайным Сантой. Не рассказывайте никому, кому вы готовите подарок!', 'success');
+
+            // Обновляем список участников
+            updateParticipantsList();
+        }
+
+        // Функция для сброса распределения (админская функция)
+        function resetDistribution() {
+            // Сбрасываем всех пользователей
+            users.forEach(user => {
+                user.assigned = false;
+                user.recipient = null;
+            });
+
+            // Если текущий пользователь авторизован, сбрасываем и его
+            if (currentUser) {
+                currentUser.assigned = false;
+                currentUser.recipient = null;
+
+                // Разблокируем кнопку
+                document.getElementById('becomeSantaBtn').classList.remove('btn-disabled');
+                document.getElementById('becomeSantaBtn').disabled = false;
+
+                // Сбрасываем результат
+                document.getElementById('recipientName').textContent = 'Еще не определен';
+                document.getElementById('resultMessage').textContent = 'После нажатия кнопки "Стать Тайным Сантой" здесь появится имя получателя вашего подарка.';
+            }
+
+            // Обновляем список участников
+            updateParticipantsList();
+
+            showMessage('adminMessage', 'Распределение сброшено! Все пользователи теперь могут снова участвовать.', 'success');
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Страница загружена, инициализируем...");
+
+            // Создаем снежинки
+            createSnowflakes();
+
+            // Инициализируем список участников
+            updateParticipantsList();
+
+            // Назначаем обработчики событий
+            document.getElementById('loginBtn').addEventListener('click', login);
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('becomeSantaBtn').addEventListener('click', becomeSanta);
+            document.getElementById('resetBtn').addEventListener('click', resetDistribution);
+
+            // Обработка нажатия Enter в полях ввода
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+
+            // Показываем демо-сообщение
+            setTimeout(() => {
+                showMessage('adminMessage', 'Для демо используйте: логин "анна", пароль "anna123"', 'success');
+            }, 1000);
+
+            // Для отладки
+            console.log("Кнопка входа:", document.getElementById('loginBtn'));
+            console.log("Всего пользователей:", users.length);
+        });
+    </script>
+</body>
+</html>
